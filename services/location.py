@@ -1,40 +1,43 @@
-import overpy
-from geopy.geocoders import Nominatim
-import random
+import requests
+import streamlit as st
 
-api = overpy.Overpass()
-geolocator = Nominatim(user_agent="coffee-finder-app")
+def find_coffee_shops(location: str, radius: int = 2000):
+    # Step 1: Geocode location string to lat/lng
+    geo_url = "https://api.geoapify.com/v1/geocode/search"
+    geo_params = {
+        "text": location,
+        "apiKey": st.secrets["GEOAPIFY_API_KEY"]
+    }
 
-def resolve_location_to_coords(location_str: str):
-    if "," in location_str:
-        try:
-            lat, lon = map(float, location_str.split(","))
-            return lat, lon
-        except ValueError:
-            pass  # fallback to geocoding below
-
-    location = geolocator.geocode(location_str)
-    if location:
-        return location.latitude, location.longitude
-    raise ValueError("Could not resolve location")
-
-def find_coffee_shops(location_str: str, radius: int = 1000):
-    lat, lon = resolve_location_to_coords(location_str)
+    geo_response = requests.get(geo_url, params=geo_params)
+    geo_data = geo_response.json()
     
-    query = f"""
-    node
-      [amenity=cafe]
-      (around:{radius},{lat},{lon});
-    out;
-    """
-    result = api.query(query)
+    if not geo_data["features"]:
+        return []
+
+    lat = geo_data["features"][0]["properties"]["lat"]
+    lon = geo_data["features"][0]["properties"]["lon"]
+
+    # Step 2: Search nearby coffee shops
+    place_url = "https://api.geoapify.com/v2/places"
+    place_params = {
+        "categories": "catering.cafe",
+        "filter": f"circle:{lon},{lat},{radius}",
+        "bias": f"proximity:{lon},{lat}",
+        "limit": 10,
+        "apiKey": st.secrets["GEOAPIFY_API_KEY"]
+    }
+
+    place_response = requests.get(place_url, params=place_params)
+    place_data = place_response.json()
+
     shops = []
-    for node in result.nodes:
-        name = node.tags.get("name", "Unnamed Café")
-        rating = round(random.uniform(3.0,5.0),1)
+    for feature in place_data["features"]:
+        prop = feature["properties"]
         shops.append({
-            "name": name,
-            "address": f"{node.lat}, {node.lon}",
-            "rating": rating
+            "name": prop.get("name", "Unnamed Café"),
+            "address": prop.get("formatted", "Unknown"),
+            "rating": round(__import__("random").uniform(3.0, 5.0), 1)
         })
+    
     return shops
