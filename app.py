@@ -9,19 +9,23 @@ st.set_page_config(page_title="Find Coffee Shops", layout="centered")
 st.title("☕ Find Nearby Coffee Shops")
 location = st.text_input("Enter your location")
 
-# Initialize state for search results and booking
+if not location:
+    st.warning("Please enter a location to search for coffee shops.")
+    st.stop()
+
+# Initialize session state
 if "shops" not in st.session_state:
     st.session_state.shops = []
 if "active_booking" not in st.session_state:
     st.session_state.active_booking = None
 
-# Search button
+# Search
 if st.button("Search"):
     with st.spinner("Finding coffee shops..."):
         st.session_state.shops = find_coffee_shops(location)
-        st.session_state.active_booking = None  # reset booking
+        st.session_state.active_booking = None
 
-# Display search results if available
+# Show results
 if st.session_state.shops:
     for idx, shop in enumerate(st.session_state.shops[:5]):
         name = shop["name"]
@@ -36,7 +40,6 @@ if st.session_state.shops:
         if st.button(f"Book Table at {name}", key=f"book_btn_{idx}"):
             st.session_state.active_booking = idx
 
-        # Show form for selected shop
         if st.session_state.active_booking == idx:
             show_booking_form(name, idx)
 
