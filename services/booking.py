@@ -12,4 +12,3 @@ def show_booking_form(shop_name: str, idx: int):
 
         if submit:
             st.success(f"✅ Booking confirmed at {shop_name} for {people} people. We will contact you at {phone}.")
-            # Optional: store or return booking details here
