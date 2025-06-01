@@ -53,3 +53,12 @@ Store all bookings in SQLite or Google Sheets
 
 📨 4. Email / SMS Confirmation
 Send user a booking confirmation automatically
+
+## Requirements
+streamlit	        #Web app framework
+overpy	            #Query nearby cafes using OpenStreetMap (Overpass API)
+geopy	            #Geocode text location (e.g., "Dallas, TX") into coordinates
+langchain	        #Framework to use Gemini through standard agents
+google-generativeai	#Gemini API for generating coffee shop summaries
+python-dotenv	    #Manage .env API keys and config cleanly
+langchain-google-genai
