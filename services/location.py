@@ -6,7 +6,7 @@ def find_coffee_shops(location: str, radius: int = 2000):
     geo_url = "https://api.geoapify.com/v1/geocode/search"
     geo_params = {
         "text": location,
-        "apiKey": st.secrets["GEOAPIFY_API_KEY"]
+        "apiKey": st.secrets.get["GEOAPIFY_API_KEY"]
     }
 
     geo_response = requests.get(geo_url, params=geo_params)
