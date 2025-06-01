@@ -8,9 +8,6 @@ st.set_page_config(page_title="Find Coffee Shops", layout="centered")
 # Search input
 st.title("☕ Find Nearby Coffee Shops")
 location = st.text_input("Enter your location")
-if not location:
-    st.warning("Please enter a location to search for coffee shops.")
-    st.stop()
 
 # Initialize state for search results and booking
 if "shops" not in st.session_state:
