@@ -7,15 +7,17 @@ def find_coffee_shops(location: str, radius: int = 2000):
     geo_params = {
     "text": location,
     "apiKey": st.secrets["GEOAPIFY_API_KEY"]
+        print("Geoapify response:", geo_data)
     }
 
     geo_response = requests.get(geo_url, params=geo_params)
     geo_data = geo_response.json()
 
-# ✅ SAFETY CHECK
+# ✅ Proper indentation
     if "features" not in geo_data or not geo_data["features"]:
     st.warning("⚠️ Could not find that location. Please try a nearby city or full place name.")
     return []
+
     lat = geo_data["features"][0]["properties"]["lat"]
     lon = geo_data["features"][0]["properties"]["lon"]
 
