@@ -1,10 +1,6 @@
-import os
 import streamlit as st
-from dotenv import load_dotenv
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.schema import HumanMessage
-
-load_dotenv()
 
 llm = ChatGoogleGenerativeAI(
     model="gemini-2.0-flash",
